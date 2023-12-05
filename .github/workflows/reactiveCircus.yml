@@ -22,7 +22,7 @@ jobs:
           # cache: 'gradle'
 
       - name: CHMOD
-        run: chmod +x ./gradlew
+        run: chmod +x gradlew
         
       - name: Run emulator, install & launch app and calculate cache
         uses: ReactiveCircus/android-emulator-runner@v2
