@@ -2,12 +2,10 @@ name: Performance Profiling
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - '*'
-
+    branches: [ "main" ]
+    
 jobs:
   bidder_token_generation_time:
     name: Bidder Token Generation Time
@@ -21,7 +19,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          # cache: gradle
+          cache: gradle
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
