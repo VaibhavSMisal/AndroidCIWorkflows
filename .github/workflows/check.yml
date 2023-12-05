@@ -45,7 +45,9 @@ jobs:
           adb devices  
 
       - name: Install App
-        run: ./gradlew installDebug
+        run: |
+          chmod +x ./gradlew
+          ./gradlew installDebug
 
       - name: Print debug apk files
         run: ls /Users/runner/work/  #adb -s emulator-5554 install
