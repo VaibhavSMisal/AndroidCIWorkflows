@@ -1,0 +1,58 @@
+name: Performance Profiling
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  bidder_token_generation_time:
+    name: Bidder Token Generation Time
+    runs-on: macos-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install System Image
+        run: sdkmanager --install 'system-images;android-30;google_apis_playstore;x86_64'
+
+      - name: Create Emulator
+        run: echo "no" |
+          avdmanager create avd -n TestAVD -k "system-images;android-30;google_apis_playstore;x86_64"
+
+      - name: Restart adb server
+        run: |
+          adb kill-server
+          adb start-server
+
+      - name: Launch Emulator
+        run: |
+          echo "Starting emulator and waiting for boot to complete...."
+          $ANDROID_HOME/emulator/emulator -avd TestAVD -no-skin -no-audio -no-window &
+          adb wait-for-device 
+          echo "Emulator has finished booting"
+          adb devices  
+
+      - name: Install App
+        run: ./gradlew installDebug
+
+      - name: Launch app
+        run: |
+          sleep 2
+          adb shell am start -n com.linkedin.audiencenetwork.testapp.view/.TestActivity
+
+      - name: Print logs
+        run: adb -s emulator-5554 logcat &
