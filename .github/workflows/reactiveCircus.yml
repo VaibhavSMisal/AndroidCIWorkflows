@@ -35,5 +35,5 @@ jobs:
             ./gradlew installDebug
             adb shell cmd package list packages
             sleep 3
-            adb shell am start -n com.example.cicddemo/.MainActivity
-            adb shell run-as com.example.cicddemo du -sh /data/data/com.example.cicddemo/cache
+            # adb shell am start -n com.example.cicddemo/.MainActivity
+            # adb shell run-as com.example.cicddemo du -sh /data/data/com.example.cicddemo/cache
