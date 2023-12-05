@@ -47,10 +47,13 @@ jobs:
       - name: Install App
         run: ./gradlew installDebug
 
+      - name: Print debug apk files
+        run: ls /Users/runner/work/  #adb -s emulator-5554 install
+
       - name: Launch app
         run: |
           sleep 2
-          adb shell am start -n com.linkedin.audiencenetwork.testapp.view/.TestActivity
+          adb shell am start -n com.example.quizapp/.MainActivity #com.linkedin.audiencenetwork.testapp.view/.TestActivity
 
       - name: Print logs
         run: adb -s emulator-5554 logcat &
