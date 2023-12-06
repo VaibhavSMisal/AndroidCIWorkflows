@@ -9,7 +9,7 @@ jobs:
   app_cache_usage:
     runs-on: macos-latest
     env:
-      CACHE_SIZE: 0.00 KB
+      CACHE_SIZE: "0.00 KB"
     
     steps:
       - name: Checkout
