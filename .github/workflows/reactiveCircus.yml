@@ -22,6 +22,18 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'gradle'
+          
+      - name: Gradle cache
+        uses: gradle/gradle-build-action@v2
+        
+      - name: AVD cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
 
       - name: Providing permissions
         run: chmod +x ./gradlew
@@ -37,10 +49,11 @@ jobs:
             ./gradlew installDebug
             adb shell cmd package list packages
             adb shell am start -n com.example.quizapp/.MainActivity
-            echo "CACHE_SIZE=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_ENV"
-            echo "The cache size is $CACHE_SIZE"
+            echo "${{env.CACHE_SIZE}}=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_ENV"
+            echo "The cache size is ${{env.CACHE_SIZE}}"
 
   pr_comment_for_cache_usage:
+      needs: app_cache_usage
       runs-on: ubuntu-latest
       
       permissions:
@@ -49,5 +62,5 @@ jobs:
         - uses: mshick/add-pr-comment@v2
           with:
             message: |
-              The **Cache size** is $CACHE_SIZE
+              The **Cache size** is ${{env.CACHE_SIZE}}
 
