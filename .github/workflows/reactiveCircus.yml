@@ -6,7 +6,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  bidder_token_generation_time:
+  app_cache_usage:
     runs-on: macos-latest
     
     steps:
@@ -23,7 +23,7 @@ jobs:
       - name: Providing permissions
         run: chmod +x ./gradlew
         
-      - name: Run emulator, install & launch app
+      - name: Run emulator, Install & launch app, Display cache usage
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -34,4 +34,5 @@ jobs:
             ./gradlew installDebug
             adb shell cmd package list packages
             adb shell am start -n com.example.quizapp/.MainActivity
+            adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache
 
