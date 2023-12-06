@@ -20,9 +20,8 @@ jobs:
           distribution: 'adopt'
           cache: 'gradle'
 
-      # - name: CHMOD
-      #   run: |
-      #     chmod +x ./gradlew
+      - name: Providing permissions
+        run: chmod +x ./gradlew
         
       - name: Run emulator, install & launch app
         uses: ReactiveCircus/android-emulator-runner@v2
