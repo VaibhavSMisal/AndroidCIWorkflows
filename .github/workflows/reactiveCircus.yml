@@ -37,5 +37,5 @@ jobs:
             # adb shell cmd package list packages
             sleep 3
             adb shell am start -n com.example.quizapp/.MainActivity  #com.example.cicddemo/.MainActivity
-            adb -s emulator-5554 logcat &
-            # adb shell run-as com.example.cicddemo du -sh /data/data/com.example.cicddemo/cache
+            # adb -s emulator-5554 logcat &
+            adb shell run-as com.example.cicddemo du -sh /data/data/com.example.cicddemo/cache
