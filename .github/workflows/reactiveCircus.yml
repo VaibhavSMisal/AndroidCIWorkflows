@@ -8,6 +8,8 @@ on:
 jobs:
   app_cache_usage:
     runs-on: macos-latest
+    env:
+      CACHE_SIZE: 0.00 KB
     
     steps:
       - name: Checkout
@@ -34,5 +36,6 @@ jobs:
             ./gradlew installDebug
             adb shell cmd package list packages
             adb shell am start -n com.example.quizapp/.MainActivity
-            adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache
+            "CACHE_SIZE=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_ENV"
+            echo The cache size is $CACHE_SIZE
 
