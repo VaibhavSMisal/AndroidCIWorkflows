@@ -33,4 +33,5 @@ jobs:
             adb devices
             ./gradlew installDebug
             adb shell cmd package list packages
+            adb shell am start -n com.example.quizapp/.MainActivity
 
