@@ -49,7 +49,7 @@ jobs:
             ./gradlew installDebug
             adb shell cmd package list packages
             adb shell am start -n com.example.quizapp/.MainActivity
-            echo "${{env.CACHE_SIZE}}=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_ENV"
+            echo "CACHE_SIZE=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_ENV"
             echo "The cache size is ${{env.CACHE_SIZE}}"
 
   pr_comment_for_cache_usage:
