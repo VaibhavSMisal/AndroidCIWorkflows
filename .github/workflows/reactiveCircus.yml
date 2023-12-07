@@ -54,7 +54,7 @@ jobs:
       - name: Store cache size in env variable 
         id: cache_size
         run: |
-          echo "CACHE_SIZE=$( echo ${{ steps.cache_size_long.outputs.CACHE_SIZE_LONG }} | cut -d '/' -f 1)" >> "$GITHUB_OUTPUT"
+          echo "CACHE_SIZE=$( echo ${{ steps.cache_size_long.outputs.CACHE_SIZE_LONG }} | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
 
       # - name: Display cache size in logs
       #   run: echo "The cache size is ${{ env.CACHE_SIZE }}".
@@ -66,8 +66,13 @@ jobs:
       permissions:
         pull-requests: write
       steps:
+        - name: store cache usage in a variable
+          env: 
+            CACHE_USAGE: "0.00 K"
+          run: echo "CACHE_USAGE=${{ needs.app_cache_usage.outputs.cache_size }}" >> "$GITHUB_ENV"
+          
         - uses: mshick/add-pr-comment@v2
           with:
             message: |
-              The **Cache size** is ${{ needs.app_cache_usage.outputs.cache_size }}.
+              The **Cache size** is ${{ env.CACHE_USAGE }}.
 
