@@ -4,13 +4,13 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-env:
-  CACHE_SIZE_GLOBAL: "0.00 KB"
       
 jobs:
   app_cache_usage:
     runs-on: macos-latest
+
+    outputs: 
+      cache_size: $ {{ steps.cache_size.outputs.CACHE_SIZE }}
     
     steps:
       - name: Checkout
@@ -40,7 +40,7 @@ jobs:
         
       - name: Run emulator, Install & launch app, Display cache usage
         uses: ReactiveCircus/android-emulator-runner@v2
-        id: cache_size
+        id: cache_size_long
         with:
           api-level: 30
           target: google_apis
@@ -49,14 +49,15 @@ jobs:
             adb devices
             ./gradlew installDebug
             adb shell am start -n com.example.quizapp/.MainActivity
-            echo "CACHE_SIZE=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_OUTPUT"
+            echo "CACHE_SIZE_LONG=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_OUTPUT"
           
       - name: Store cache size in env variable 
+        id: cache_size
         run: |
-          echo "CACHE_SIZE_GLOBAL=$( echo ${{ steps.cache_size.outputs.CACHE_SIZE }} | cut -d '/' -f 1)" >> "$GITHUB_ENV"
+          echo "CACHE_SIZE=$( echo ${{ steps.cache_size_long.outputs.CACHE_SIZE_LONG }} | cut -d '/' -f 1)" >> "$GITHUB_OUTPUT"
 
-      - name: Display cache size in logs
-        run: echo "The cache size is ${{ env.CACHE_SIZE_GLOBAL }}".
+      # - name: Display cache size in logs
+      #   run: echo "The cache size is ${{ env.CACHE_SIZE }}".
 
   pr_comment_for_cache_usage:
       needs: app_cache_usage
@@ -68,5 +69,5 @@ jobs:
         - uses: mshick/add-pr-comment@v2
           with:
             message: |
-              The **Cache size** is ${{ jobs.app_cache_usage.steps.cache_size.outputs.CACHE_SIZE }}.
+              The **Cache size** is ${{ needs.app_cache_usage.outputs.cache_size }}.
 
