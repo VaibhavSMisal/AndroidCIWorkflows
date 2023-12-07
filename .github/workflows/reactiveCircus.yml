@@ -61,7 +61,7 @@ jobs:
           echo "CACHE_SIZE_GLOBAL=$( echo ${{ steps.cache_size.outputs.CACHE_SIZE }} | cut -d '/' -f 1)" >> "$GITHUB_ENV"
 
       - name: Display cache size in logs
-        run: echo "The cache size is ${{ env.CACHE_SIZE_GLOBAL }}.
+        run: echo "The cache size is ${{ env.CACHE_SIZE_GLOBAL }}".
 
   pr_comment_for_cache_usage:
       needs: app_cache_usage
