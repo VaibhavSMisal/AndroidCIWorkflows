@@ -48,13 +48,17 @@ jobs:
           script: |
             adb devices
             ./gradlew installDebug
-            adb shell cmd package list packages
             adb shell am start -n com.example.quizapp/.MainActivity
             echo "CACHE_SIZE=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_OUTPUT"
 
+      - name: Test cut command
+        run: |
+          echo "This is a test string." | cut -d ' ' -f 1)
+          echo "This   is another test string." | cut -d ' ' -f 1)
+          
       - name: Display cache size in logs
         run: |
-          echo "CACHE_SIZE_GLOBAL=$( echo ${{ steps.cache_size.outputs.CACHE_SIZE }} | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
+          echo "CACHE_SIZE_GLOBAL=$( echo ${{ steps.cache_size.outputs.CACHE_SIZE }} | cut -d '/' -f 1)" >> "$GITHUB_ENV"
           echo "The cache size is ${{ env.CACHE_SIZE_GLOBAL }}.
 
   pr_comment_for_cache_usage:
