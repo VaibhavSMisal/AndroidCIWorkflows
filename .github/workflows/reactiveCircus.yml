@@ -57,6 +57,5 @@ jobs:
         - uses: mshick/add-pr-comment@v2
           with:
             message: |
-              ### Cache Size
-              The **Cache size** is **${{ env.CACHE_SIZE }}**.
+              The **Cache size** is ${{ env.CACHE_SIZE }}.
 
