@@ -50,11 +50,6 @@ jobs:
             ./gradlew installDebug
             adb shell am start -n com.example.quizapp/.MainActivity
             echo "CACHE_SIZE=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_OUTPUT"
-
-      - name: Test cut command
-        run: |
-          echo "This is a test string." | cut -d ' ' -f 1
-          echo "This   is another test string." | cut -d ' ' -f 1
           
       - name: Store cache size in env variable 
         run: |
@@ -73,5 +68,5 @@ jobs:
         - uses: mshick/add-pr-comment@v2
           with:
             message: |
-              The **Cache size** is $CACHE_SIZE_GLOBAL.
+              The **Cache size** is ${{ jobs.app_cache_usage.steps.cache_size.outputs.CACHE_SIZE }}.
 
