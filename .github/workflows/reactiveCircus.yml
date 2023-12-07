@@ -62,17 +62,27 @@ jobs:
   pr_comment_for_cache_usage:
       needs: app_cache_usage
       runs-on: ubuntu-latest
+
+      env: 
+        CACHE_USAGE_ENV: ${{ needs.app_cache_usage.outputs.cache_size }}
+        CACHE_USAGE_ENV2: "${{ needs.app_cache_usage.outputs.cache_size }}"
       
       permissions:
         pull-requests: write
       steps:
         - name: store cache usage in a variable
-          env: 
-            CACHE_USAGE: "${{ needs.app_cache_usage.outputs.cache_size }}"
-          run: echo "CACHE_USAGE=${CACHE_USAGE}" >> "$GITHUB_ENV"
+          run: echo "CACHE_USAGE_ENV=${CACHE_USAGE_ENV}" >> "$GITHUB_ENV"
+
+        - name: store cache usage in a variable 2
+          run: echo "CACHE_USAGE_EN2V=${CACHE_USAGE_ENV2}" >> "$GITHUB_ENV"
+
+        - name: Check env values
+          run: |
+            echo ${{ env.CACHE_USAGE_ENV }}
+            echo ${{ env.CACHE_USAGE_ENV2 }}
           
         - uses: mshick/add-pr-comment@v2
           with:
             message: |
-              The **Cache size** is ${{ env.CACHE_USAGE }}.
+              The **Cache size** is ${{ env.CACHE_USAGE_ENV }}.
 
