@@ -68,10 +68,8 @@ jobs:
       steps:
         - name: store cache usage in a variable
           env: 
-            CACHE_USAGE: "0.00 K"
-          run: |
-            echo "The cache size is ${{ needs.app_cache_usage.outputs.cache_size }}"
-            echo "CACHE_USAGE=${{ needs.app_cache_usage.outputs.cache_size }}" >> "$GITHUB_ENV"
+            CACHE_USAGE: "${{ needs.app_cache_usage.outputs.cache_size }}"
+          run: echo "CACHE_USAGE=${CACHE_USAGE}" >> "$GITHUB_ENV"
           
         - uses: mshick/add-pr-comment@v2
           with:
