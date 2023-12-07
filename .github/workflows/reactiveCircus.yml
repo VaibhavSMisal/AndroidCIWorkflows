@@ -53,8 +53,8 @@ jobs:
 
       - name: Test cut command
         run: |
-          echo "This is a test string." | cut -d ' ' -f 1)
-          echo "This   is another test string." | cut -d ' ' -f 1)
+          echo "This is a test string." | cut -d ' ' -f 1
+          echo "This   is another test string." | cut -d ' ' -f 1
           
       - name: Display cache size in logs
         run: |
