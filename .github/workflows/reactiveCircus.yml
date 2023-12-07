@@ -1,0 +1,61 @@
+name: Performance Profiling
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+      
+jobs:
+  app_cache_usage:
+    runs-on: macos-latest
+
+    outputs: 
+      cache_size: ${{ steps.cache_size.outputs.CACHE_SIZE }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Providing permissions
+        run: chmod +x ./gradlew
+        
+      - name: Run emulator, Install & launch app, Calculate cache usage
+        uses: ReactiveCircus/android-emulator-runner@v2
+        id: cache_size_unformatted
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          script: |
+            adb devices
+            ./gradlew installDebug
+            adb shell am start -n com.example.quizapp/.MainActivity
+            echo "CACHE_SIZE_UNFORMATTED=$(adb shell run-as com.example.quizapp du -sh /data/data/com.example.quizapp/cache)" >> "$GITHUB_OUTPUT"
+          
+      - name: Store cache size in env variable 
+        id: cache_size
+        run: |
+          echo "CACHE_SIZE=$( echo ${{ steps.cache_size_unformatted.outputs.CACHE_SIZE_UNFORMATTED }} | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+
+  pr_comment_for_cache_usage:
+      needs: app_cache_usage
+      runs-on: ubuntu-latest
+      
+      permissions:
+        pull-requests: write
+      steps:
+        - name: Extract cache size from dependency job
+          run: echo "CACHE_SIZE=${{ needs.app_cache_usage.outputs.cache_size }}" >> "$GITHUB_ENV"
+          
+        - uses: mshick/add-pr-comment@v2
+          with:
+            message: |
+              The **Cache size** is ${{ env.CACHE_SIZE }}.
+
