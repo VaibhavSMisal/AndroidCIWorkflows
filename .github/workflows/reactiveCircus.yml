@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-latest
 
     outputs: 
-      cache_size: ${{ steps.cache_size.outputs.CACHE_SIZE }}
+      cache_size: "${{ steps.cache_size.outputs.CACHE_SIZE }}"
     
     steps:
       - name: Checkout
